@@ -1,0 +1,106 @@
+body {
+    font-family: Arial, sans-serif;
+    margin-top: 170px; /* desplaza los resultados hacia arriba mientras menos px tenga  */
+}
+
+.header, .fixed-title {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1000;
+    padding: 10px;
+    height: 50px;
+}
+
+.fixed-title {
+    margin-top: 10px ;
+    top: 60px; /* Ajusta la posición para que esté debajo del encabezado */
+    height: auto; /* Permite que el contenedor se ajuste al contenido */
+    text-align: center; /* Centra el texto */
+    background-image: url('../static/fondomedicina.jpg'); /* Cambia esto a la ruta de tu imagen */
+    background-repeat: repeat;
+    background-size: 200px 200px; /* Establece el tamaño de la imagen a 100px por 100px */
+    color: rgb(255, 255, 255); /* Hace que el texto sea blanco */
+    text-shadow: 2px 2px 4px rgba(2, 2, 2, .9); /* Agrega sombra al texto */
+    -webkit-text-stroke: 1.5px green; /* Agrega un borde verde al texto */
+
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+th {
+    background-color: #00953b;
+    color: white;
+}
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+input[type=submit] {
+    color: white; /* Cambia el color del texto a blanco */
+    border: 2px solid #ffa400; /* Cambia el color del borde a naranja */
+
+    margin-top: 8px;
+    border-radius: 10px; /* Hace que el botón sea redondeado */
+    outline: none; /* Elimina el borde predeterminado al hacer clic en el botón */
+    transition: background-color 0.3s ease; /* Añade una transición suave al cambiar el color de fondo */
+    height: 35px; /* Establece la altura del botón igual a la altura de la barra de búsqueda */
+    background-color: #ffa400; /* Hace que el botón sea naranja */
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    width: 98%;
+    display: flex;
+    justify-content: space-between;
+    background-color: #00953b;
+    z-index: 1000;
+    padding: 10px;
+    height: 50px;
+}
+
+.logo {
+    height: 50px;
+}
+
+form {
+    display: flex;
+}
+
+input[type=text] {
+    margin-right: 10px;
+    border-radius: 10px; /* Hace que la barra de búsqueda sea redondeada */
+    outline: orange;
+    border: 1px solid gray; /* Añade un borde gris a la barra de búsqueda */
+
+    height: 35px; /* Elimina el borde predeterminado al hacer clic en la barra de búsqueda */
+}
+
+input[type=text]:focus {
+    border: 0.5px solid orange; /* Hace que la barra de búsqueda resalte de naranja al hacer clic en ella */
+    box-shadow: 0 0 5px orange; /* Añade un difuminado naranja alrededor de la barra de búsqueda */
+
+}
+
+h2 {
+    text-align: center; /* Centra el texto */
+    
+}
+

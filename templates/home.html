@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Atencion VIP clientes</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container"> <!-- Nuevo contenedor -->
+        <div class="header">
+            <img src="{{ url_for('static', filename='locatel.png') }}" alt="Logo" class="logo">
+
+            <form action="/" method="get">
+                <input type="text" name="search" placeholder="cédula del cliente">
+                <input type="submit" value="Buscar">
+            </form>
+            <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".xml"> <!-- Solo acepta archivos .xml -->
+                <input type="submit" value="Cargar Recipe">
+            </form>
+        </div>
+    </div>
+    <div class="fixed-title">
+        <h1>Atención VIP clientes</h1>
+    </div>
+    
+    <table>
+        <tr>
+            <th>Fecha</th>
+            <th>Médico</th>
+            <th>Especialidad</th>
+            <th>Pago</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Nacionalidad</th>
+            <th>Cedula</th>
+            <th>Telefonos</th>
+            <th>Sms</th>
+            <th>Correo</th>
+            <th>Producto</th>
+            <th>Molecula</th>
+            <!-- Agrega más columnas según sea necesario -->
+        </tr>
+        {% for recipe in recipes %}
+        <tr>
+            <td>{{ recipe[0] }}</td>
+            <td>{{ recipe[1] }}</td>
+            <td>{{ recipe[2] }}</td>
+            <td>{{ recipe[3] }}</td>
+            <td>{{ recipe[4] }}</td>
+            <td>{{ recipe[5] }}</td>
+            <td>{{ recipe[6] }}</td>
+            <td>{{ recipe[7] }}</td>
+            <td>{{ recipe[8] }}</td>
+            <td>{{ recipe[9] }}</td>
+            <td>{{ recipe[10] }}</td>
+            <td>{{ recipe[11] }}</td>
+            <td>{{ recipe[12] }}</td>
+            <!-- Agrega más celdas según sea necesario -->
+        </tr>
+        {% endfor %}
+    </table>
+    <script>
+        var fileInput = document.querySelector('input[type="file"]');
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                alert('Recipe seleccionado: ' + this.files[0].name + ' 👀');
+            }
+        });
+    
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!fileInput.value) {
+                alert('Por favor selecciona un Recipe en el boton "choose file" 📂');
+            } else {
+                var formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+    
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert('Recipe cargado exitosamente ✅');
+                    fileInput.value = ''; // Limpia el campo de archivo
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al cargar el Recipe ❌');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

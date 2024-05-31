@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+            <recipe>
+                <fecha>28/05/2024</fecha>
+                <medicotratante>DRA BONELLI NATERA ANDREA ALEJANDRA</medicotratante>
+                <especialidad>MEDICINA INTERNA</especialidad>
+                <responsablepago>LA INTERNACIONAL DE SEGUROS S.A</responsablepago>
+                <paciente>
+                    <nombres>PABLO LOPEZ</nombres>
+                    <apellidos>RIVERA</apellidos>
+                    <nacionalidad>V</nacionalidad>
+                    <cedula>8777967</cedula>
+                    <telefonos>04262134416-04125417145</telefonos>
+                    <sms>04125417145</sms>
+                    <correo>LOPZPAOLA@GMAIL.COM</correo>
+                </paciente>
+                <medicamentos>
+
+	            <medicamento>
+        	            <producto>ARANDA (LOSARTAN/AMLODIPINA) 50MG/2,5MG</producto>        
+	                    <principio-activo>TELMISARTAN-AMLODIPINO</principio-activo>        
+	            </medicamento>
+            
+	            <medicamento>
+        	            <producto>GLICINATO DE MAGNESIO </producto>        
+	                    <principio-activo>NO DISPONIBLE</principio-activo>        
+	            </medicamento>
+            </medicamentos>
+                <posologia>&lt;b&gt;&lt;u&gt;ARANDA (LOSARTAN/AMLODIPINA) 50MG/2,5MG&lt;/u&gt;&lt;/b&gt;: 1 tableta diaria en la noche PERMANENTE&amp;nbsp;&lt;br&gt; &lt;br&gt;&lt;b&gt;&lt;u&gt;GLICINATO DE MAGNESIO &lt;/u&gt;&lt;/b&gt;: 1 tableta diaria a la hora de dormir por 3 meses&lt;br&gt; &lt;br&gt;</posologia>
+                <posologiatx>ARANDA (LOSARTAN/AMLODIPINA) 50MG/2,5MG: 1 tableta diaria en la noche PERMANENTE  \n   \n GLICINATO DE MAGNESIO : 1 tableta diaria a la hora de dormir por 3 meses \n   \n </posologiatx>
+            </recipe>
+            
