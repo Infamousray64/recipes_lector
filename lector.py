@@ -21,7 +21,8 @@ c.execute('''
         sms TEXT,
         correo TEXT,
         producto TEXT,
-        principio_activo TEXT
+        principio_activo TEXT,
+        UNIQUE(fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo)
     )
 ''')
 
@@ -56,8 +57,12 @@ for filename in os.listdir(dir_name):
 
         if c.fetchone() is None:
             c.execute('''
-            INSERT INTO recipe VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo))
+                INSERT INTO recipe VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo))
+
+        # Eliminar el archivo XML
+        os.remove(os.path.join(dir_name, filename))
+
 # Guardar los cambios y cerrar la conexión
 conn.commit()
 conn.close()
