@@ -23,6 +23,7 @@
         <h1>Atención VIP clientes</h1>
     </div>
     
+    
     <table>
         <tr>
             <th>Fecha</th>
@@ -38,6 +39,7 @@
             <th>Correo</th>
             <th>Producto</th>
             <th>Molecula</th>
+            <th>Posologia</th>
             <!-- Agrega más columnas según sea necesario -->
         </tr>
         {% for recipe in recipes %}
@@ -55,6 +57,7 @@
             <td>{{ recipe[10] }}</td>
             <td>{{ recipe[11] }}</td>
             <td>{{ recipe[12] }}</td>
+            <td>{{ recipe[13] }}</td>
             <!-- Agrega más celdas según sea necesario -->
         </tr>
         {% endfor %}

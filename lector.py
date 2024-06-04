@@ -1,6 +1,9 @@
 import xml.etree.ElementTree as ET
 import sqlite3
 import os
+import html
+from bs4 import BeautifulSoup
+
 
 # Conectar a la base de datos SQLite
 conn = sqlite3.connect('base_de_datos.db')
@@ -22,6 +25,7 @@ c.execute('''
         correo TEXT,
         producto TEXT,
         principio_activo TEXT,
+        posologia TEXT,
         UNIQUE(fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo)
     )
 ''')
@@ -48,18 +52,36 @@ for filename in os.listdir(dir_name):
         telefonos = root.find('paciente/telefonos').text
         sms = root.find('paciente/sms').text
         correo = root.find('paciente/correo').text
-        producto = root.find('medicamentos/medicamento/producto').text
-        principio_activo = root.find('medicamentos/medicamento/principio-activo').text
+        posologia = html.unescape(root.find('posologia').text)
+
+        productos = []
+        principios_activos = []
+
+        for medicamento in root.findall('medicamentos/medicamento'):
+            producto = medicamento.find('producto').text
+            principio_activo = medicamento.find('principio-activo').text
+
+            productos.append(producto)
+            principios_activos.append(principio_activo)
+
+        productos_str = ', '.join(productos)
+        principios_activos_str = ', '.join(principios_activos)
+
+         # Crear objetos BeautifulSoup
+        posologia_html = html.unescape(root.find('posologia').text)
+        soup_posologia = BeautifulSoup(posologia_html, 'html.parser')
+
+        # Extraer el texto y reemplazar los saltos de línea con espacios
+        posologia = ' '.join(soup_posologia.get_text().split())
 
         c.execute('''
-            SELECT * FROM recipe WHERE fecha = ? AND medicotratante = ? AND especialidad = ? AND responsablepago = ? AND nombres = ? AND apellidos = ? AND nacionalidad = ? AND cedula = ? AND telefonos = ? AND sms = ? AND correo = ? AND producto = ? AND principio_activo = ?
-        ''', (fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo))
+            SELECT * FROM recipe WHERE fecha = ? AND medicotratante = ? AND especialidad = ? AND responsablepago = ? AND nombres = ? AND apellidos = ? AND nacionalidad = ? AND cedula = ? AND telefonos = ? AND sms = ? AND correo = ? AND producto = ? AND principio_activo = ? AND posologia = ? 
+        ''', (fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, productos_str, principios_activos_str, posologia))
 
         if c.fetchone() is None:
             c.execute('''
-                INSERT INTO recipe VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo))
-
+        INSERT INTO recipe VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, productos_str, principios_activos_str, posologia))
         # Eliminar el archivo XML
         os.remove(os.path.join(dir_name, filename))
 

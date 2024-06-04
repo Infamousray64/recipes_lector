@@ -27,7 +27,7 @@ def home():
         # Si se proporcionó una consulta de búsqueda, buscar la cédula en la base de datos
         c.execute('SELECT DISTINCT * FROM recipe WHERE cedula LIKE ?', ('%' + search_query + '%',))
     else:
-        # Si no se proporcionó una consulta de búsqueda, seleccionar todas las recetas
+        # Si no se proporcionó una consulta de búsqueda, seleccionar todas las recipes
         c.execute('SELECT DISTINCT * FROM recipe')
 
     # Obtener todos los resultados
