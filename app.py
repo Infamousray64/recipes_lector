@@ -27,11 +27,11 @@ def home():
     # Si se proporcionó una consulta de búsqueda, buscar la cédula, nombres, apellidos y producto en la base de datos
         c.execute('''
         SELECT DISTINCT * FROM recipe 
-        WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) AND processed = FALSE
+        WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) AND procesado = FALSE
     ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
     else:
         # Si no se proporcionó una consulta de búsqueda, seleccionar todas las recipes
-        c.execute('SELECT DISTINCT * FROM recipe WHERE processed = FALSE')
+        c.execute('SELECT DISTINCT * FROM recipe WHERE procesado = FALSE')
 
     # Obtener todos los resultados
     recipes = c.fetchall()

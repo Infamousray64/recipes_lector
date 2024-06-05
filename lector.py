@@ -27,7 +27,7 @@ c.execute('''
         producto TEXT,
         principio_activo TEXT,
         posologia TEXT,
-        processed BOOLEAN DEFAULT FALSE,
+        procesado BOOLEAN DEFAULT FALSE,
         UNIQUE(fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo)
     )
 ''')
