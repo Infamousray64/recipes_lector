@@ -24,11 +24,14 @@ def home():
     search_query = request.args.get('search')
 
     if search_query:
-        # Si se proporcionó una consulta de búsqueda, buscar la cédula en la base de datos
-        c.execute('SELECT DISTINCT * FROM recipe WHERE cedula LIKE ?', ('%' + search_query + '%',))
+    # Si se proporcionó una consulta de búsqueda, buscar la cédula, nombres, apellidos y producto en la base de datos
+        c.execute('''
+        SELECT DISTINCT * FROM recipe 
+        WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) AND processed = FALSE
+    ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
     else:
         # Si no se proporcionó una consulta de búsqueda, seleccionar todas las recipes
-        c.execute('SELECT DISTINCT * FROM recipe')
+        c.execute('SELECT DISTINCT * FROM recipe WHERE processed = FALSE')
 
     # Obtener todos los resultados
     recipes = c.fetchall()
