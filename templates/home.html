@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Atencion VIP clientes</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='locatelfavicon.png') }}">
@@ -24,9 +25,11 @@
         <h1>Atención VIP clientes</h1>
     </div>
     
-    
+    <div class="table-container">
+
     <table>
-        <tr>
+        <thead>
+            <tr class="sticky-header">            
             <th>Fecha</th>
             <th>Médico</th>
             <th>Especialidad</th>
@@ -42,7 +45,8 @@
             <th>Molecula</th>
             <th>Posologia</th>
             <!-- Agrega más columnas según sea necesario -->
-        </tr>
+            </tr>
+        </thead>
         {% for recipe in recipes %}
         <tr>
             <td>{{ recipe[0] }}</td>
@@ -63,6 +67,7 @@
         </tr>
         {% endfor %}
     </table>
+</div>
     <script>
         var fileInput = document.querySelector('input[type="file"]');
         fileInput.addEventListener('change', function() {
