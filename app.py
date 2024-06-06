@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
 import sqlite3
 import schedule
@@ -24,11 +25,14 @@ def home():
     search_query = request.args.get('search')
 
     if search_query:
-        # Si se proporcionó una consulta de búsqueda, buscar la cédula en la base de datos
-        c.execute('SELECT DISTINCT * FROM recipe WHERE cedula LIKE ?', ('%' + search_query + '%',))
+    # Si se proporcionó una consulta de búsqueda, buscar la cédula, nombres, apellidos y producto en la base de datos
+        c.execute('''
+        SELECT DISTINCT * FROM recipe 
+        WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) AND procesado = FALSE
+    ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
     else:
         # Si no se proporcionó una consulta de búsqueda, seleccionar todas las recipes
-        c.execute('SELECT DISTINCT * FROM recipe')
+        c.execute('SELECT DISTINCT * FROM recipe WHERE procesado = FALSE')
 
     # Obtener todos los resultados
     recipes = c.fetchall()
@@ -50,6 +54,16 @@ def upload_file():
         filename = secure_filename(file.filename)
         file.save(os.path.join('recipes', filename))
         return 'File uploaded successfully'
+    
+@app.route('/update_procesado', methods=['POST'])
+def update_procesado():
+    data = request.get_json()
+    conn = sqlite3.connect('base_de_datos.db')  # Necesitas abrir la conexión a la base de datos
+    c = conn.cursor()
+    c.execute('UPDATE recipe SET procesado = ? WHERE id = ?', (data['procesado'], data['id']))
+    conn.commit()
+    conn.close()  # No olvides cerrar la conexión
+    return jsonify(success=True)
 
 if __name__ == '__main__':
     # Ejecutar lector.py inmediatamente antes de iniciar la aplicación

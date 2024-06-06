@@ -105,7 +105,7 @@ h2 {
 }
 .table-container {
     overflow: auto;
-    max-height: 595px; /* Ajusta esto a la altura que desees */
+    max-height: 559px; /* Ajusta esto a la altura que desees */
 }
 
 .sticky-header th {

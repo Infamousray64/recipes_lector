@@ -12,7 +12,7 @@
             <img src="{{ url_for('static', filename='locatel.png') }}" alt="Logo" class="logo">
 
             <form action="/" method="get">
-                <input type="text" name="search" placeholder="cédula del cliente">
+                <input type="text" name="search" placeholder="nombre, cedula o medicamento">
                 <input type="submit" value="Buscar">
             </form>
             <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
@@ -29,7 +29,8 @@
 
     <table>
         <thead>
-            <tr class="sticky-header">            
+            <tr class="sticky-header">
+            <th>ID</th>            
             <th>Fecha</th>
             <th>Médico</th>
             <th>Especialidad</th>
@@ -44,6 +45,7 @@
             <th>Producto</th>
             <th>Molecula</th>
             <th>Posologia</th>
+            <th>Procesado</th>
             <!-- Agrega más columnas según sea necesario -->
             </tr>
         </thead>
@@ -63,6 +65,10 @@
             <td>{{ recipe[11] }}</td>
             <td>{{ recipe[12] }}</td>
             <td>{{ recipe[13] }}</td>
+            <td>{{ recipe[14] }}</td>
+            <td>
+                <input type="checkbox" class="procesado-checkbox" data-id="{{ recipe[0] }}" {% if recipe[15] == 1 %}checked{% endif %}>
+            </td>
             <!-- Agrega más celdas según sea necesario -->
         </tr>
         {% endfor %}
@@ -99,6 +105,27 @@
                 });
             }
         });
+        document.querySelectorAll('.procesado-checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            fetch('/update_procesado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: this.dataset.id,
+                    procesado: this.checked ? 1 : 0,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    });
     </script>
 </body>
 </html>
