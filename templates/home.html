@@ -17,7 +17,7 @@
             </form>
 
             <select id="status-filter" onchange="filterRecipes()">
-                <option value="">Todos</option>
+                <option value="todos">Todos</option>
                 <option value="procesado">Procesado</option>
                 <option value="no procesado">No Procesado</option>
             </select>
@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="fixed-title">
-        <h1>Atención VIP clientes 💚</h1>
+        <h1>Atención VIP clientes</h1>
     </div>
     
     <div class="table-container">
@@ -82,9 +82,24 @@
     </table>
 </div>
     <script>
-    function filterRecipes() {
-        var status = document.getElementById("status-filter").value;
-        window.location.href = "/filter?status=" + status;
+    window.onload = function() {
+        var statusFilter = document.getElementById("status-filter");
+        var urlParams = new URLSearchParams(window.location.search);
+        var status = urlParams.get('status');
+        if (status) {
+            statusFilter.value = status;
+        }
+    
+        statusFilter.onchange = function() {
+            var status = this.value;
+            if (status === "todos") {
+                window.location.href = "/filter?status=todos";
+            } else if (status === "procesado" || status === "no procesado") {
+                window.location.href = "/filter?status=" + status;
+            } else {
+                window.location.href = "/filter";
+            }
+        }
     }
     </script>
     <script>

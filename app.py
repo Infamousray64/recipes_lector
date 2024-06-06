@@ -65,15 +65,20 @@ def update_procesado():
     conn.close()  # No olvides cerrar la conexión
     return jsonify(success=True)
 
+
 @app.route('/filter', methods=['GET'])
 def filter():
     filter_status = request.args.get('status')
     conn = sqlite3.connect('base_de_datos.db')  
     c = conn.cursor()
+    if filter_status is not None:
+        filter_status = filter_status.lower()
     if filter_status.lower() == 'procesado':
         c.execute('SELECT * FROM recipe WHERE procesado = 1')
     elif filter_status.lower() == 'no procesado':
         c.execute('SELECT * FROM recipe WHERE procesado = 0')
+    elif filter_status == 'todos':
+        c.execute('SELECT * FROM recipe')
     else:
         c.execute('SELECT * FROM recipe')
     recipes = c.fetchall()
