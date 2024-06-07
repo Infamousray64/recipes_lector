@@ -132,3 +132,10 @@ h2 {
     
     
 }
+
+#status-filter {
+    margin-top: 10px;
+    border-radius: 5px; /* Ajusta este valor para cambiar cuán redondeados son los bordes */
+    height: 30px; /* Ajusta este valor para cambiar la altura del botón de filtro */
+    border: 2px solid orange; /* Añade un borde naranja al botón de filtro */
+}
