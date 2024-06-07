@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Atencion VIP clientes</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='locatelfavicon.png') }}">
 </head>
 <body>
     <div class="container"> <!-- Nuevo contenedor -->
@@ -10,9 +12,16 @@
             <img src="{{ url_for('static', filename='locatel.png') }}" alt="Logo" class="logo">
 
             <form action="/" method="get">
-                <input type="text" name="search" placeholder="cédula del cliente">
+                <input type="text" name="search" placeholder="nombre, cedula o medicamento">
                 <input type="submit" value="Buscar">
             </form>
+
+            <select id="status-filter" onchange="filterRecipes()">
+                <option value="todos">Todos</option>
+                <option value="procesado">Procesado</option>
+                <option value="no procesado">No Procesado</option>
+            </select>
+
             <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
                 <input type="file" name="file" accept=".xml"> <!-- Solo acepta archivos .xml -->
                 <input type="submit" value="Cargar Recipe">
@@ -23,9 +32,12 @@
         <h1>Atención VIP clientes</h1>
     </div>
     
-    
+    <div class="table-container">
+
     <table>
-        <tr>
+        <thead>
+            <tr class="sticky-header">
+            <th>ID</th>            
             <th>Fecha</th>
             <th>Médico</th>
             <th>Especialidad</th>
@@ -40,8 +52,10 @@
             <th>Producto</th>
             <th>Molecula</th>
             <th>Posologia</th>
+            <th>Procesado</th>
             <!-- Agrega más columnas según sea necesario -->
-        </tr>
+            </tr>
+        </thead>
         {% for recipe in recipes %}
         <tr>
             <td>{{ recipe[0] }}</td>
@@ -58,41 +72,17 @@
             <td>{{ recipe[11] }}</td>
             <td>{{ recipe[12] }}</td>
             <td>{{ recipe[13] }}</td>
+            <td>{{ recipe[14] }}</td>
+            <td>
+                <input type="checkbox" class="procesado-checkbox" data-id="{{ recipe[0] }}" {% if recipe[15] == 1 %}checked{% endif %}>
+            </td>
             <!-- Agrega más celdas según sea necesario -->
         </tr>
         {% endfor %}
     </table>
-    <script>
-        var fileInput = document.querySelector('input[type="file"]');
-        fileInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                alert('Recipe seleccionado: ' + this.files[0].name + ' 👀');
-            }
-        });
-    
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!fileInput.value) {
-                alert('Por favor selecciona un Recipe en el boton "choose file" 📂');
-            } else {
-                var formData = new FormData();
-                formData.append('file', fileInput.files[0]);
-    
-                fetch('/upload', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.text())
-                .then(data => {
-                    alert('Recipe cargado exitosamente ✅');
-                    fileInput.value = ''; // Limpia el campo de archivo
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Hubo un error al cargar el Recipe ❌');
-                });
-            }
-        });
-    </script>
+</div>
+<script src="{{ url_for('static', filename='funcionFiltro.js') }}"></script>
+<script src="{{ url_for('static', filename='fileUpload.js') }}"></script>
+<script src="{{ url_for('static', filename='updateProcesado.js') }}"></script>
 </body>
 </html>

@@ -15,7 +15,7 @@ body {
 
 .fixed-title {
     margin-top: 10px ;
-    top: 60px; /* Ajusta la posición para que esté debajo del encabezado */
+    top: 61px; /* Ajusta la posición para que esté debajo del encabezado */
     height: auto; /* Permite que el contenedor se ajuste al contenido */
     text-align: center; /* Centra el texto */
     background-image: url('../static/fondomedicina.jpg'); /* Cambia esto a la ruta de tu imagen */
@@ -103,4 +103,32 @@ h2 {
     text-align: center; /* Centra el texto */
     
 }
+.table-container {
+    overflow: auto;
+    max-height: 559px; /* Ajusta esto a la altura que desees */
+}
 
+.sticky-header th {
+    position: sticky;
+    top: 0;
+    background-color: #00953b;
+    z-index: 10;
+}
+/* Estilos para pantallas de ancho 600px o menos */
+@media (max-width: 600px) {
+    .table-container {
+        max-height: 300px; /* Ajusta la altura de la tabla para pantallas pequeñas */
+    }
+
+    /* Ajusta el tamaño del texto para pantallas pequeñas */
+    th, td {
+        font-size: 12px;
+    }
+
+    /* Ajusta el tamaño del título para pantallas pequeñas */
+    .fixed-title {
+        font-size: 18px;
+    }
+    
+    
+}

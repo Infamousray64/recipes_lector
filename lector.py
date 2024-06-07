@@ -12,6 +12,7 @@ c = conn.cursor()
 # Crear la tabla si no existe
 c.execute('''
     CREATE TABLE IF NOT EXISTS recipe (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         fecha TEXT,
         medicotratante TEXT,
         especialidad TEXT,
@@ -26,9 +27,22 @@ c.execute('''
         producto TEXT,
         principio_activo TEXT,
         posologia TEXT,
+        procesado BOOLEAN DEFAULT FALSE,
         UNIQUE(fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo)
     )
 ''')
+
+c.execute('''
+    PRAGMA table_info(recipe);
+''')
+columns = c.fetchall()
+column_names = [column[1] for column in columns]
+
+if 'procesado' not in column_names:
+    c.execute('''
+        ALTER TABLE recipe
+        ADD COLUMN procesado BOOLEAN DEFAULT FALSE
+    ''')
 
 # Directorio donde se encuentran los archivos XML
 dir_name = 'recipes/'
@@ -52,7 +66,12 @@ for filename in os.listdir(dir_name):
         telefonos = root.find('paciente/telefonos').text
         sms = root.find('paciente/sms').text
         correo = root.find('paciente/correo').text
-        posologia = html.unescape(root.find('posologia').text)
+
+        posologia_element = root.find('posologia')
+        if posologia_element is not None:
+            posologia = html.unescape(posologia_element.text)
+        else:
+            posologia = ""
 
         productos = []
         principios_activos = []
@@ -67,20 +86,21 @@ for filename in os.listdir(dir_name):
         productos_str = ', '.join(productos)
         principios_activos_str = ', '.join(principios_activos)
 
-         # Crear objetos BeautifulSoup
-        posologia_html = html.unescape(root.find('posologia').text)
-        soup_posologia = BeautifulSoup(posologia_html, 'html.parser')
+# Crear objetos BeautifulSoup
+        if posologia_element is not None:
+            posologia_html = html.unescape(posologia_element.text)
+            soup_posologia = BeautifulSoup(posologia_html, 'html.parser')
 
-        # Extraer el texto y reemplazar los saltos de línea con espacios
-        posologia = ' '.join(soup_posologia.get_text().split())
+    # Extraer el texto y reemplazar los saltos de línea con espacios
+            posologia = ' '.join(soup_posologia.get_text().split())
 
         c.execute('''
-            SELECT * FROM recipe WHERE fecha = ? AND medicotratante = ? AND especialidad = ? AND responsablepago = ? AND nombres = ? AND apellidos = ? AND nacionalidad = ? AND cedula = ? AND telefonos = ? AND sms = ? AND correo = ? AND producto = ? AND principio_activo = ? AND posologia = ? 
-        ''', (fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, productos_str, principios_activos_str, posologia))
+    SELECT * FROM recipe WHERE fecha = ? AND medicotratante = ? AND especialidad = ? AND responsablepago = ? AND nombres = ? AND apellidos = ? AND nacionalidad = ? AND cedula = ? AND telefonos = ? AND sms = ? AND correo = ? AND producto = ? AND principio_activo = ? AND posologia = ? 
+''', (fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, productos_str, principios_activos_str, posologia))
 
         if c.fetchone() is None:
             c.execute('''
-        INSERT INTO recipe VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO recipe (fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo, posologia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, productos_str, principios_activos_str, posologia))
         # Eliminar el archivo XML
         os.remove(os.path.join(dir_name, filename))
