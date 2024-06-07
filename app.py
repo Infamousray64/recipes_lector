@@ -28,11 +28,11 @@ def home():
     # Si se proporcionó una consulta de búsqueda, buscar la cédula, nombres, apellidos y producto en la base de datos
         c.execute('''
         SELECT DISTINCT * FROM recipe 
-        WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) 
+        WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) AND procesado = FALSE
     ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
     else:
         # Si no se proporcionó una consulta de búsqueda, seleccionar todas las recipes
-        c.execute('SELECT DISTINCT * FROM recipe')
+        c.execute('SELECT DISTINCT * FROM recipe WHERE procesado = FALSE')
 
     # Obtener todos los resultados
     recipes = c.fetchall()
@@ -65,7 +65,6 @@ def update_procesado():
     conn.close()  # No olvides cerrar la conexión
     return jsonify(success=True)
 
-
 @app.route('/filter', methods=['GET'])
 def filter():
     filter_status = request.args.get('status')
@@ -83,6 +82,7 @@ def filter():
         c.execute('SELECT * FROM recipe')
     recipes = c.fetchall()
     return render_template('home.html', recipes=recipes)
+
 
 if __name__ == '__main__':
     # Ejecutar lector.py inmediatamente antes de iniciar la aplicación

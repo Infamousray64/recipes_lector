@@ -17,9 +17,9 @@
             </form>
 
             <select id="status-filter" onchange="filterRecipes()">
-                <option value="todos">Todos</option>
-                <option value="procesado">Procesado</option>
                 <option value="no procesado">No Procesado</option>
+                <option value="procesado">Procesado</option>
+                <option value="todos">Todos</option>
             </select>
 
             <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
@@ -81,79 +81,8 @@
         {% endfor %}
     </table>
 </div>
-    <script>
-    window.onload = function() {
-        var statusFilter = document.getElementById("status-filter");
-        var urlParams = new URLSearchParams(window.location.search);
-        var status = urlParams.get('status');
-        if (status) {
-            statusFilter.value = status;
-        }
-    
-        statusFilter.onchange = function() {
-            var status = this.value;
-            if (status === "todos") {
-                window.location.href = "/filter?status=todos";
-            } else if (status === "procesado" || status === "no procesado") {
-                window.location.href = "/filter?status=" + status;
-            } else {
-                window.location.href = "/filter";
-            }
-        }
-    }
-    </script>
-    <script>
-        var fileInput = document.querySelector('input[type="file"]');
-        fileInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                alert('Recipe seleccionado: ' + this.files[0].name + ' 👀');
-            }
-        });
-    
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!fileInput.value) {
-                alert('Por favor selecciona un Recipe en el boton "choose file" 📂');
-            } else {
-                var formData = new FormData();
-                formData.append('file', fileInput.files[0]);
-    
-                fetch('/upload', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.text())
-                .then(data => {
-                    alert('Recipe cargado exitosamente ✅');
-                    fileInput.value = ''; // Limpia el campo de archivo
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Hubo un error al cargar el Recipe ❌');
-                });
-            }
-        });
-        document.querySelectorAll('.procesado-checkbox').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            fetch('/update_procesado', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id: this.dataset.id,
-                    procesado: this.checked ? 1 : 0,
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        });
-    });   
-    </script>
+<script src="{{ url_for('static', filename='funcionFiltro.js') }}"></script>
+<script src="{{ url_for('static', filename='fileUpload.js') }}"></script>
+<script src="{{ url_for('static', filename='updateProcesado.js') }}"></script>
 </body>
 </html>
