@@ -23,21 +23,24 @@ body {
     background-size: 200px 200px; /* Establece el tamaño de la imagen a 100px por 100px */
     color: rgb(255, 255, 255); /* Hace que el texto sea blanco */
     text-shadow: 2px 2px 4px rgba(2, 2, 2, .9); /* Agrega sombra al texto */
-    -webkit-text-stroke: 1.5px green; /* Agrega un borde verde al texto */
-
+    -webkit-text-stroke: 1.5px rgb(204, 118, 5); /* Agrega un borde verde al texto */
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
 }
+
 th, td {
     border: 1px solid #ddd;
     padding: 8px;
 }
+
 th {
     background-color: #00953b;
     color: white;
 }
+
 tr:nth-child(even) {
     background-color: #f2f2f2;
 }
@@ -47,11 +50,21 @@ input[type=text] {
     padding: 12px 20px;
     margin: 8px 0;
     box-sizing: border-box;
+    margin-right: 10px;
+    border-radius: 10px; /* Hace que la barra de búsqueda sea redondeada */
+    outline: orange;
+    border: 1px solid gray; /* Añade un borde gris a la barra de búsqueda */
+    height: 35px; /* Ajusta la altura */
 }
+
+input[type=text]:focus {
+    border: 0.5px solid orange; /* Hace que la barra de búsqueda resalte de naranja al hacer clic en ella */
+    box-shadow: 0 0 5px orange; /* Añade un difuminado naranja alrededor de la barra de búsqueda */
+}
+
 input[type=submit] {
     color: white; /* Cambia el color del texto a blanco */
     border: 2px solid #ffa400; /* Cambia el color del borde a naranja */
-
     margin-top: 8px;
     border-radius: 10px; /* Hace que el botón sea redondeado */
     outline: none; /* Elimina el borde predeterminado al hacer clic en el botón */
@@ -84,25 +97,10 @@ form {
     display: flex;
 }
 
-input[type=text] {
-    margin-right: 10px;
-    border-radius: 10px; /* Hace que la barra de búsqueda sea redondeada */
-    outline: orange;
-    border: 1px solid gray; /* Añade un borde gris a la barra de búsqueda */
-
-    height: 35px; /* Elimina el borde predeterminado al hacer clic en la barra de búsqueda */
-}
-
-input[type=text]:focus {
-    border: 0.5px solid orange; /* Hace que la barra de búsqueda resalte de naranja al hacer clic en ella */
-    box-shadow: 0 0 5px orange; /* Añade un difuminado naranja alrededor de la barra de búsqueda */
-
-}
-
 h2 {
     text-align: center; /* Centra el texto */
-    
 }
+
 .table-container {
     overflow: auto;
     max-height: 559px; /* Ajusta esto a la altura que desees */
@@ -114,6 +112,7 @@ h2 {
     background-color: #00953b;
     z-index: 10;
 }
+
 /* Estilos para pantallas de ancho 600px o menos */
 @media (max-width: 600px) {
     .table-container {
@@ -129,8 +128,6 @@ h2 {
     .fixed-title {
         font-size: 18px;
     }
-    
-    
 }
 
 #status-filter {
@@ -138,4 +135,18 @@ h2 {
     border-radius: 5px; /* Ajusta este valor para cambiar cuán redondeados son los bordes */
     height: 30px; /* Ajusta este valor para cambiar la altura del botón de filtro */
     border: 2px solid orange; /* Añade un borde naranja al botón de filtro */
+}
+
+td {
+    width: auto; /* Ajusta el ancho automáticamente para adaptarse al contenido */
+    min-width: 155px; /* Establece un ancho mínimo para las celdas */
+    padding: 8px 20px; /* Aumenta el espacio horizontal y mantiene el vertical reducido */
+    vertical-align: center; /* Alinea el contenido en la parte superior */
+    text-align: left; /* Alinea el texto a la izquierda */
+    word-wrap: break-word; /* Permite que las palabras largas se rompan y pasen a la siguiente línea */
+    white-space: normal; /* Asegura que el espacio y los saltos de línea se manejen de manera normal */
+}
+
+.status-checkbox {
+    margin-right: 5px; /* Espaciado entre el checkbox y el texto */
 }

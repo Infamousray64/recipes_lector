@@ -17,9 +17,11 @@
             </form>
 
             <select id="status-filter" onchange="filterRecipes()">
-                <option value="no procesado">No Procesado</option>
-                <option value="procesado">Procesado</option>
-                <option value="todos">Todos</option>
+                <option value="en proceso">En proceso</option>
+                <option value="cotizado parcial">Cotizado parcial</option>
+                <option value="cotizado total">Cotizado total</option>
+                <option value="facturado parcial">Facturado parcial</option>
+                <option value="facturado total">Facturado total</option>
             </select>
 
             <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
@@ -52,7 +54,7 @@
             <th>Producto</th>
             <th>Molecula</th>
             <th>Posologia</th>
-            <th>Procesado</th>
+            <th>Status</th> <!-- Título agregado para la columna de status -->
             <!-- Agrega más columnas según sea necesario -->
             </tr>
         </thead>
@@ -74,8 +76,12 @@
             <td>{{ recipe[13] }}</td>
             <td>{{ recipe[14] }}</td>
             <td>
-                <input type="checkbox" class="procesado-checkbox" data-id="{{ recipe[0] }}" {% if recipe[15] == 1 %}checked{% endif %}>
-            </td>
+                <div><input type="checkbox" class="status-checkbox" data-id="{{ recipe[0] }}" data-status="en_proceso" {% if recipe[15] == 1 %}checked{% endif %}> En proceso</div>
+                <div><input type="checkbox" class="status-checkbox" data-id="{{ recipe[0] }}" data-status="cotizado_parcial" {% if recipe[16] == 1 %}checked{% endif %}> Cotizado parcial</div>
+                <div><input type="checkbox" class="status-checkbox" data-id="{{ recipe[0] }}" data-status="cotizado_total" {% if recipe[17] == 1 %}checked{% endif %}> Cotizado total</div>
+                <div><input type="checkbox" class="status-checkbox" data-id="{{ recipe[0] }}" data-status="facturado_parcial" {% if recipe[18] == 1 %}checked{% endif %}> Facturado parcial</div>
+                <div><input type="checkbox" class="status-checkbox" data-id="{{ recipe[0] }}" data-status="facturado_total" {% if recipe[19] == 1 %}checked{% endif %}> Facturado total</div>
+            
             <!-- Agrega más celdas según sea necesario -->
         </tr>
         {% endfor %}

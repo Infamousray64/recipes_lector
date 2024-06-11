@@ -8,12 +8,22 @@ window.onload = function() {
 
     statusFilter.onchange = function() {
         var status = this.value;
-        if (status === "todos") {
-            window.location.href = "/filter?status=todos";
-        } else if (status === "procesado" || status === "no procesado") {
-            window.location.href = "/filter?status=" + status;
-        } else {
-            window.location.href = "/filter";
+        switch (status) {
+            case "todos":
+                window.location.href = "/filter?status=todos";
+                break;
+            case "procesado":
+            case "no procesado":
+            case "en proceso":
+            case "cotizado parcial":
+            case "cotizado total":
+            case "facturado parcial":
+            case "facturado total":
+                window.location.href = "/filter?status=" + encodeURIComponent(status);
+                break;
+            default:
+                window.location.href = "/filter";
+                break;
         }
     }
 }

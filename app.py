@@ -13,34 +13,28 @@ def run_lector():
     # Ejecutar lector.py
     subprocess.run(["python", "lector.py"])
 
-# Programar la ejecución de lector.py cada 5 minutos
+# Programar la ejecución de lector.py cada x segundos 
 schedule.every(10).seconds.do(run_lector)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    # Conectar a la base de datos SQLite
     conn = sqlite3.connect('base_de_datos.db')
     c = conn.cursor()
 
     search_query = request.args.get('search')
 
     if search_query:
-    # Si se proporcionó una consulta de búsqueda, buscar la cédula, nombres, apellidos y producto en la base de datos
         c.execute('''
         SELECT DISTINCT * FROM recipe 
-        WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) AND procesado = FALSE
+        WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) AND (en_proceso = FALSE AND cotizado_parcial = FALSE AND cotizado_total = FALSE AND facturado_parcial = FALSE AND facturado_total = FALSE)
     ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
     else:
-        # Si no se proporcionó una consulta de búsqueda, seleccionar todas las recipes
-        c.execute('SELECT DISTINCT * FROM recipe WHERE procesado = FALSE')
+        c.execute('SELECT DISTINCT * FROM recipe WHERE en_proceso = FALSE AND cotizado_parcial = FALSE AND cotizado_total = FALSE AND facturado_parcial = FALSE AND facturado_total = FALSE')
 
-    # Obtener todos los resultados
     recipes = c.fetchall()
 
-    # Cerrar la conexión
     conn.close()
 
-    # Renderizar la plantilla 'home.html' con los datos de las recetas
     return render_template('home.html', recipes=recipes)
 
 @app.route('/upload', methods=['POST'])
@@ -55,14 +49,15 @@ def upload_file():
         file.save(os.path.join('recipes', filename))
         return 'File uploaded successfully'
     
-@app.route('/update_procesado', methods=['POST'])
-def update_procesado():
+@app.route('/update_status', methods=['POST'])
+def update_status():
     data = request.get_json()
-    conn = sqlite3.connect('base_de_datos.db')  # Necesitas abrir la conexión a la base de datos
+    conn = sqlite3.connect('base_de_datos.db')
     c = conn.cursor()
-    c.execute('UPDATE recipe SET procesado = ? WHERE id = ?', (data['procesado'], data['id']))
+    # Asumir que 'value' ya es booleano (true o false) y usarlo directamente
+    c.execute(f'UPDATE recipe SET {data["status"]} = ? WHERE id = ?', (data['value'], data['id']))
     conn.commit()
-    conn.close()  # No olvides cerrar la conexión
+    conn.close()
     return jsonify(success=True)
 
 @app.route('/filter', methods=['GET'])
@@ -72,14 +67,12 @@ def filter():
     c = conn.cursor()
     if filter_status is not None:
         filter_status = filter_status.lower()
-    if filter_status.lower() == 'procesado':
-        c.execute('SELECT * FROM recipe WHERE procesado = 1')
-    elif filter_status.lower() == 'no procesado':
-        c.execute('SELECT * FROM recipe WHERE procesado = 0')
-    elif filter_status == 'todos':
-        c.execute('SELECT * FROM recipe')
-    else:
-        c.execute('SELECT * FROM recipe')
+        if filter_status in ['en_proceso', 'cotizado_parcial', 'cotizado_total', 'facturado_parcial', 'facturado_total']:
+            c.execute(f'SELECT * FROM recipe WHERE {filter_status} = 1')
+        elif filter_status == 'todos':
+            c.execute('SELECT * FROM recipe')
+        else:
+            c.execute('SELECT * FROM recipe')
     recipes = c.fetchall()
     return render_template('home.html', recipes=recipes)
 
