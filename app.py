@@ -28,11 +28,12 @@ def home():
     if search_query:
         c.execute('''
         SELECT DISTINCT * FROM recipe 
-        WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) AND (en_proceso = FALSE AND cotizado_parcial = FALSE AND cotizado_total = FALSE AND facturado_parcial = FALSE AND facturado_total = FALSE)
-    ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
+        WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) 
+        AND (en_proceso = FALSE AND cotizado_parcial = FALSE AND cotizado_total = FALSE AND facturado_parcial = FALSE AND facturado_total = FALSE)
+        ORDER BY SUBSTR(fecha, 7, 4) || '-' || SUBSTR(fecha, 4, 2) || '-' || SUBSTR(fecha, 1, 2) DESC
+        ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
     else:
-        c.execute('SELECT DISTINCT * FROM recipe')
-
+        c.execute('''SELECT DISTINCT * FROM recipe ORDER BY SUBSTR(fecha, 7, 4) || '-' || SUBSTR(fecha, 4, 2) || '-' || SUBSTR(fecha, 1, 2) DESC''')
     recipes = c.fetchall()
 
     conn.close()
@@ -84,16 +85,20 @@ def filter():
     filter_status = request.args.get('status')
     conn = sqlite3.connect('base_de_datos.db')  
     c = conn.cursor()
+    # Ordenamiento por fecha más reciente
+    order_by = "ORDER BY SUBSTR(fecha, 7, 4) || '-' || SUBSTR(fecha, 4, 2) || '-' || SUBSTR(fecha, 1, 2) DESC"
     if filter_status:
         filter_status = filter_status.lower().replace(" ", "_")
         if filter_status == 'todos':
-            query = 'SELECT * FROM recipe'
+            query = f'SELECT * FROM recipe {order_by}'
         else:
-            query = 'SELECT * FROM recipe WHERE estado_actual = ?'
+            query = f'SELECT * FROM recipe WHERE estado_actual = ? {order_by}'
             c.execute(query, (filter_status,))
     else:
-        query = 'SELECT * FROM recipe'
-    c.execute(query) if filter_status == 'todos' else None
+        query = f'SELECT * FROM recipe {order_by}'
+    # Ejecutar la consulta para el caso 'todos'
+    if filter_status == 'todos' or not filter_status:
+        c.execute(query)
     recipes = c.fetchall()
     conn.close()
     return render_template('home.html', recipes=recipes)
