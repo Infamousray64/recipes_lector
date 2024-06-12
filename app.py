@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
+from datetime import datetime, timezone, timedelta
 import sqlite3
 import schedule
 import time
@@ -54,8 +55,28 @@ def update_status():
     data = request.get_json()
     conn = sqlite3.connect('base_de_datos.db')
     c = conn.cursor()
-    # Asumir que 'value' ya es booleano (true o false) y usarlo directamente
-    c.execute(f'UPDATE recipe SET {data["status"]} = ? WHERE id = ?', (data['value'], data['id']))
+    
+    # Convertir el valor booleano a un entero
+    value_int = 1 if data['value'] else 0
+    
+    # Establecer la zona horaria deseada como UTC -4
+    utc_minus_4 = timezone(timedelta(hours=-4))
+    
+    # Formatear clickedTime para que coincida con el formato de tu base de datos
+    if 'clickedTime' in data:
+        # Asumiendo que clickedTime viene en el formato ISO 8601 y necesita conversión a UTC -4
+        clicked_time = datetime.fromisoformat(data['clickedTime'].rstrip('Z')).replace(tzinfo=timezone.utc).astimezone(utc_minus_4).strftime('%Y-%m-%d %H:%M:%S')
+    else:
+        # Obtener la hora actual ajustada a UTC -4
+        clicked_time = datetime.now(utc_minus_4).strftime('%Y-%m-%d %H:%M:%S')
+    
+    # Asumir que tienes una columna llamada '{status}_time' para almacenar la hora del clic
+    status_time_column = f"{data['status']}_time"
+    
+    # Preparar la consulta SQL para evitar inyecciones SQL
+    sql = f'UPDATE recipe SET {data["status"]} = ?, {status_time_column} = ? WHERE id = ?'
+    c.execute(sql, (value_int, clicked_time, data['id']))
+    
     conn.commit()
     conn.close()
     return jsonify(success=True)

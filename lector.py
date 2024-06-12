@@ -32,6 +32,11 @@ c.execute('''
         cotizado_total BOOLEAN DEFAULT FALSE,
         facturado_parcial BOOLEAN DEFAULT FALSE,
         facturado_total BOOLEAN DEFAULT FALSE,
+        en_proceso_time TEXT,
+        cotizado_parcial_time TEXT,
+        cotizado_total_time TEXT,
+        facturado_parcial_time TEXT,
+        facturado_total_time TEXT,
         UNIQUE(fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo)
     )
 ''')

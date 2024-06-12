@@ -65,10 +65,12 @@ document.querySelectorAll('.status-checkbox').forEach(function(checkbox) {
                 console.error('Error:', xhr.responseText);
             }
         };
+        var clickedTime = new Date().toISOString();
         xhr.send(JSON.stringify({
             id: this.dataset.id,
             status: this.dataset.status,
             value: isChecked ? 1 : 0,
+            clickedTime: clickedTime, // Incluir la hora actual en la solicitud
         }));
     });
 });
