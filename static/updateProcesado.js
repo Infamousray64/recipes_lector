@@ -2,56 +2,56 @@ document.querySelectorAll('.status-checkbox').forEach(function(checkbox) {
     checkbox.addEventListener('change', function() {
         var status = this.dataset.status;
         var isChecked = this.checked;
+        var enProcesoCheckbox = this.closest('td').querySelector('input[data-status="en_proceso"]');
+        var cotizadoParcialCheckbox = this.closest('td').querySelector('input[data-status="cotizado_parcial"]');
+        var cotizadoTotalCheckbox = this.closest('td').querySelector('input[data-status="cotizado_total"]');
+        var facturadoParcialCheckbox = this.closest('td').querySelector('input[data-status="facturado_parcial"]');
+        var facturadoTotalCheckbox = this.closest('td').querySelector('input[data-status="facturado_total"]');
 
-        // Deshabilitar o habilitar las casillas de total basado en el estado de las casillas parciales
-        if (status === 'cotizado_parcial' || status === 'facturado_parcial') {
-            let totalStatus = status.replace('parcial', 'total');
-            let totalCheckbox = this.closest('td').querySelector(`input[data-status="${totalStatus}"]`);
-            if (isChecked) {
-                if (totalCheckbox) {
-                    totalCheckbox.checked = false;
-                    totalCheckbox.disabled = true;
-                }
-            } else {
-                // Revisar si se puede habilitar la casilla de total al desmarcar parcial
-                let canEnableTotal = true;
-                if (status === 'facturado_parcial') {
-                    let cotizadoTotalCheckbox = this.closest('td').querySelector('input[data-status="cotizado_total"]');
-                    canEnableTotal = cotizadoTotalCheckbox && cotizadoTotalCheckbox.checked;
-                }
-                if (canEnableTotal && totalCheckbox) {
-                    totalCheckbox.disabled = false;
-                }
-            }
+        // Verificar condiciones para cotizado parcial o total
+        if ((status === 'cotizado_parcial' || status === 'cotizado_total') && isChecked && !enProcesoCheckbox.checked) {
+            alert('Para marcar como cotizado, primero debe estar en proceso.');
+            this.checked = false; // Desmarcar porque no cumple la condición previa
+            return;
         }
 
-        if (isChecked) {
-            var prevCheckboxes;
+        // Verificar condiciones para facturado parcial o total
+        if ((status === 'facturado_parcial' || status === 'facturado_total') && isChecked && !(cotizadoParcialCheckbox.checked || cotizadoTotalCheckbox.checked)) {
+            alert('Para marcar como facturado, primero debe estar cotizado.');
+            this.checked = false; // Desmarcar porque no cumple la condición previa
+            return;
+        }
 
-            if (status === 'cotizado_parcial') {
-                prevCheckboxes = this.closest('td').querySelectorAll('input[data-status="en_proceso"]');
-            } else if (status === 'cotizado_total') {
-                prevCheckboxes = this.closest('td').querySelectorAll('input[data-status="en_proceso"], input[data-status="cotizado_parcial"]');
-            } else if (status === 'facturado_parcial') {
-                prevCheckboxes = this.closest('td').querySelectorAll('input[data-status="cotizado_parcial"]');
-            } else if (status === 'facturado_total') {
-                prevCheckboxes = this.closest('td').querySelectorAll('input[data-status="cotizado_total"]');
-            }
+        // Nueva lógica para evitar seleccionar otro estatus parcial o total si ya se tiene uno marcado
+        var anyPartialChecked = cotizadoParcialCheckbox.checked || facturadoParcialCheckbox.checked;
+        var anyTotalChecked = cotizadoTotalCheckbox.checked || facturadoTotalCheckbox.checked;
 
-            if (prevCheckboxes && Array.from(prevCheckboxes).some(checkbox => !checkbox.checked)) {
-                alert('Asegurate de avanzar los status anteriores seleccionando su respectivo check-box.');
-                this.checked = false;
-                // Si se desmarca debido a una condición no cumplida, también se debe deshabilitar el total correspondiente.
-                if (status === 'cotizado_parcial' || status === 'facturado_parcial') {
-                    let totalStatus = status.replace('parcial', 'total');
-                    let totalCheckbox = this.closest('td').querySelector(`input[data-status="${totalStatus}"]`);
-                    if (totalCheckbox) {
-                        totalCheckbox.checked = false;
-                        totalCheckbox.disabled = true;
-                    }
-                }
-                return;
-            }
+        if (isChecked && ((anyPartialChecked && status.includes('total')) || (anyTotalChecked && status.includes('parcial')))) {
+            alert('No puede seleccionar un estado ' + (status.includes('total') ? 'total' : 'parcial') + ' si ya tiene un estado ' + (anyPartialChecked ? 'parcial' : 'total') + ' marcado.');
+            this.checked = false; // Desmarcar porque no cumple la nueva condición
+            return;
+        }
+
+        // Deshabilitar el otro cotizado si uno es marcado
+        if (status === 'cotizado_parcial' && isChecked) {
+            cotizadoTotalCheckbox.disabled = true;
+        } else if (status === 'cotizado_total' && isChecked) {
+            cotizadoParcialCheckbox.disabled = true;
+        } else if (status === 'cotizado_parcial' && !isChecked) {
+            cotizadoTotalCheckbox.disabled = false;
+        } else if (status === 'cotizado_total' && !isChecked) {
+            cotizadoParcialCheckbox.disabled = false;
+        }
+
+        // Deshabilitar el otro facturado si uno es marcado
+        if (status === 'facturado_parcial' && isChecked) {
+            facturadoTotalCheckbox.disabled = true;
+        } else if (status === 'facturado_total' && isChecked) {
+            facturadoParcialCheckbox.disabled = true;
+        } else if (status === 'facturado_parcial' && !isChecked) {
+            facturadoTotalCheckbox.disabled = false;
+        } else if (status === 'facturado_total' && !isChecked) {
+            facturadoParcialCheckbox.disabled = false;
         }
 
         // Enviar la solicitud de actualización al servidor usando AJAX
