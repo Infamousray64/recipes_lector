@@ -37,6 +37,7 @@ c.execute('''
         cotizado_total_time TEXT,
         facturado_parcial_time TEXT,
         facturado_total_time TEXT,
+        estado_actual TEXT,
         UNIQUE(fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo)
     )
 ''')

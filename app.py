@@ -17,6 +17,7 @@ def run_lector():
 # Programar la ejecución de lector.py cada x segundos 
 schedule.every(10).seconds.do(run_lector)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     conn = sqlite3.connect('base_de_datos.db')
@@ -30,7 +31,7 @@ def home():
         WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) AND (en_proceso = FALSE AND cotizado_parcial = FALSE AND cotizado_total = FALSE AND facturado_parcial = FALSE AND facturado_total = FALSE)
     ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
     else:
-        c.execute('SELECT DISTINCT * FROM recipe WHERE en_proceso = FALSE AND cotizado_parcial = FALSE AND cotizado_total = FALSE AND facturado_parcial = FALSE AND facturado_total = FALSE')
+        c.execute('SELECT DISTINCT * FROM recipe')
 
     recipes = c.fetchall()
 
@@ -64,18 +65,15 @@ def update_status():
     
     # Formatear clickedTime para que coincida con el formato de tu base de datos
     if 'clickedTime' in data:
-        # Asumiendo que clickedTime viene en el formato ISO 8601 y necesita conversión a UTC -4
         clicked_time = datetime.fromisoformat(data['clickedTime'].rstrip('Z')).replace(tzinfo=timezone.utc).astimezone(utc_minus_4).strftime('%Y-%m-%d %H:%M:%S')
     else:
-        # Obtener la hora actual ajustada a UTC -4
         clicked_time = datetime.now(utc_minus_4).strftime('%Y-%m-%d %H:%M:%S')
     
-    # Asumir que tienes una columna llamada '{status}_time' para almacenar la hora del clic
     status_time_column = f"{data['status']}_time"
     
-    # Preparar la consulta SQL para evitar inyecciones SQL
-    sql = f'UPDATE recipe SET {data["status"]} = ?, {status_time_column} = ? WHERE id = ?'
-    c.execute(sql, (value_int, clicked_time, data['id']))
+    # Actualizar el estado y la hora del estado
+    sql = f'UPDATE recipe SET {data["status"]} = ?, {status_time_column} = ?, estado_actual = ? WHERE id = ?'
+    c.execute(sql, (value_int, clicked_time, data['status'], data['id']))
     
     conn.commit()
     conn.close()
@@ -86,15 +84,18 @@ def filter():
     filter_status = request.args.get('status')
     conn = sqlite3.connect('base_de_datos.db')  
     c = conn.cursor()
-    if filter_status is not None:
-        filter_status = filter_status.lower()
-        if filter_status in ['en_proceso', 'cotizado_parcial', 'cotizado_total', 'facturado_parcial', 'facturado_total']:
-            c.execute(f'SELECT * FROM recipe WHERE {filter_status} = 1')
-        elif filter_status == 'todos':
-            c.execute('SELECT * FROM recipe')
+    if filter_status:
+        filter_status = filter_status.lower().replace(" ", "_")
+        if filter_status == 'todos':
+            query = 'SELECT * FROM recipe'
         else:
-            c.execute('SELECT * FROM recipe')
+            query = 'SELECT * FROM recipe WHERE estado_actual = ?'
+            c.execute(query, (filter_status,))
+    else:
+        query = 'SELECT * FROM recipe'
+    c.execute(query) if filter_status == 'todos' else None
     recipes = c.fetchall()
+    conn.close()
     return render_template('home.html', recipes=recipes)
 
 
