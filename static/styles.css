@@ -18,12 +18,13 @@ body {
     top: 61px; /* Ajusta la posición para que esté debajo del encabezado */
     height: auto; /* Permite que el contenedor se ajuste al contenido */
     text-align: center; /* Centra el texto */
-    background-image: url('../static/fondomedicina.jpg'); /* Cambia esto a la ruta de tu imagen */
+    background-image: url('../static/fondomedicina.jpg'); 
     background-repeat: repeat;
     background-size: 200px 200px; /* Establece el tamaño de la imagen a 100px por 100px */
     color: rgb(255, 255, 255); /* Hace que el texto sea blanco */
     text-shadow: 2px 2px 4px rgba(2, 2, 2, .9); /* Agrega sombra al texto */
-    -webkit-text-stroke: 1.5px rgb(204, 118, 5); /* Agrega un borde verde al texto */
+    -webkit-text-stroke: 1.5px rgb(17, 11, 2); /* Agrega un borde verde al texto */
+    opacity: 0.85;
 }
 
 table {
@@ -103,7 +104,7 @@ h2 {
 
 .table-container {
     overflow: auto;
-    max-height: 559px; /* Ajusta esto a la altura que desees */
+    max-height: 650px; /* Ajusta esto a la altura que desees */
 }
 
 .sticky-header th {

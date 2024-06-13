@@ -29,7 +29,6 @@ def home():
         c.execute('''
         SELECT DISTINCT * FROM recipe 
         WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) 
-        AND (en_proceso = FALSE AND cotizado_parcial = FALSE AND cotizado_total = FALSE AND facturado_parcial = FALSE AND facturado_total = FALSE)
         ORDER BY SUBSTR(fecha, 7, 4) || '-' || SUBSTR(fecha, 4, 2) || '-' || SUBSTR(fecha, 1, 2) DESC
         ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
     else:
