@@ -2,6 +2,10 @@ from flask import Flask, render_template, request
 from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
 from datetime import datetime, timezone, timedelta
+from flask import Flask, send_file
+from io import BytesIO
+from flask import Flask, request, make_response
+import pandas as pd
 import sqlite3
 import schedule
 import time
@@ -38,18 +42,6 @@ def home():
     conn.close()
 
     return render_template('home.html', recipes=recipes)
-
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return 'No file part'
-    file = request.files['file']
-    if file.filename == '':
-        return 'No selected file'
-    if file and file.filename.endswith('.xml'):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join('recipes', filename))
-        return 'File uploaded successfully'
     
 @app.route('/update_status', methods=['POST'])
 def update_status():
@@ -102,6 +94,33 @@ def filter():
     conn.close()
     return render_template('home.html', recipes=recipes)
 
+@app.route('/download')
+def download_file():
+    estatus = request.args.get('estatus', None)  # Obtener el estatus de los parámetros de la URL
+    conn = sqlite3.connect('base_de_datos.db')
+
+    # Preparar la consulta SQL. Si estatus es None o 'todos', selecciona todo. De lo contrario, filtra por estado_actual.
+    if estatus is None or estatus == 'todos':
+        query = "SELECT * FROM recipe"
+    else:
+        query = "SELECT * FROM recipe WHERE estado_actual = ?"
+
+    # Ejecutar la consulta y cargar los resultados en un DataFrame de pandas
+    if estatus is None or estatus == 'todos':
+        df = pd.read_sql_query(query, conn)
+    else:
+        df = pd.read_sql_query(query, conn, params=(estatus,))
+
+    conn.close()
+
+    # Generar el archivo Excel en memoria
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False)
+    output.seek(0)
+
+    # Enviar el archivo Excel al usuario
+    return send_file(output, as_attachment=True, download_name="recipes.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 if __name__ == '__main__':
     # Ejecutar lector.py inmediatamente antes de iniciar la aplicación

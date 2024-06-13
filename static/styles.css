@@ -24,7 +24,7 @@ body {
     color: rgb(255, 255, 255); /* Hace que el texto sea blanco */
     text-shadow: 2px 2px 4px rgba(2, 2, 2, .9); /* Agrega sombra al texto */
     -webkit-text-stroke: 1.5px rgb(17, 11, 2); /* Agrega un borde verde al texto */
-    opacity: 0.85;
+    opacity: 0.9;
 }
 
 table {

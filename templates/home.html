@@ -25,9 +25,8 @@
                 <option value="facturado total">Facturado total</option>
             </select>
 
-            <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-                <input type="file" name="file" accept=".xml"> <!-- Solo acepta archivos .xml -->
-                <input type="submit" value="Cargar Recipe">
+            <form id="downloadForm" action="/download" method="get">
+                <input type="submit" value="Descargar Excel">
             </form>
         </div>
     </div>
@@ -89,7 +88,7 @@
     </table>
 </div>
 <script src="{{ url_for('static', filename='funcionFiltro.js') }}"></script>
-<script src="{{ url_for('static', filename='fileUpload.js') }}"></script>
+<script src="{{ url_for('static', filename='fileDownpload.js') }}"></script>
 <script src="{{ url_for('static', filename='updateProcesado.js') }}"></script>
 </body>
 </html>
