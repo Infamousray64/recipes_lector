@@ -7,31 +7,30 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='locatelfavicon.png') }}">
 </head>
 <body>
-    <div class="container"> <!-- Nuevo contenedor -->
-        <div class="header">
-            <img src="{{ url_for('static', filename='locatel.png') }}" alt="Logo" class="logo">
+    <div class="header">
+        <img src="{{ url_for('static', filename='locatel.png') }}" alt="Logo" class="logo">
 
-            <form action="/" method="get">
-                <input type="text" name="search" placeholder="nombre, cedula o medicamento">
-                <input type="submit" value="Buscar">
-            </form>
+        <form action="/" method="get">
+            <input type="text" name="search" placeholder="nombre, cedula o medicamento">
+            <input type="submit" value="Buscar">
+        </form>
 
-            <select id="status-filter" onchange="filterRecipes()">
-                <option value="todos">Todos</option>
-                <option value="en proceso">En proceso</option>
-                <option value="cotizado parcial">Cotizado parcial</option>
-                <option value="cotizado total">Cotizado total</option>
-                <option value="facturado parcial">Facturado parcial</option>
-                <option value="facturado total">Facturado total</option>
-            </select>
+        <select id="status-filter" onchange="filterRecipes()">
+            <option value="todos">Todos</option>
+            <option value="en proceso">En proceso</option>
+            <option value="cotizado parcial">Cotizado parcial</option>
+            <option value="cotizado total">Cotizado total</option>
+            <option value="facturado parcial">Facturado parcial</option>
+            <option value="facturado total">Facturado total</option>
+        </select>
 
-            <form id="downloadForm" action="/download" method="get">
-                <input type="submit" value="Descargar Excel">
-            </form>
-        </div>
+        <form id="downloadForm" action="/download" method="get">
+            <input type="submit" value="Descargar Excel">
+        </form>
     </div>
+    
     <div class="fixed-title">
-        <h1>Atención VIP clientes</h1>
+        <h1>🔰 Atención VIP Clientes 🔰</h1>
     </div>
     
     <div class="table-container">

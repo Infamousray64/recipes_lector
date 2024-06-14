@@ -1,30 +1,45 @@
 body {
     font-family: Arial, sans-serif;
-    margin-top: 170px; /* desplaza los resultados hacia arriba mientras menos px tenga  */
+    margin-top: 165px; /* desplaza los resultados hacia arriba mientras menos px tenga  */
 }
 
 .header, .fixed-title {
     position: fixed;
-    top: 0;
+    top: 100px;
+    height: 10%;
     width: 100%;
     background-color: #fff;
-    z-index: 1000;
+    z-index: 0.5;
     padding: 10px;
-    height: 50px;
+    
 }
 
 .fixed-title {
-    margin-top: 10px ;
-    top: 61px; /* Ajusta la posición para que esté debajo del encabezado */
-    height: auto; /* Permite que el contenedor se ajuste al contenido */
-    text-align: center; /* Centra el texto */
-    background-image: url('../static/fondomedicina.jpg'); 
+    position: fixed; /* Cambiado de relative a fixed */
+    top: 61px; /* Ajusta este valor si es necesario para que quede pegado a la barra superior */
+    left: 0; /* Asegura que el elemento se extienda desde el borde izquierdo */
+    right: 0; /* Asegura que el elemento se extienda hasta el borde derecho */
+    margin-top: 0; /* Ya no es necesario debido al posicionamiento fijo */
+    height: auto;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 4px rgba(2, 2, 2, .9);
+    -webkit-text-stroke: 1.5px rgb(17, 11, 2);
+    z-index: 1001; /* Asegura que esté sobre la barra superior y otros elementos */
+}
+
+.fixed-title::before {
+    content: ''; /* Necesario para que el pseudo-elemento se muestre */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../static/fondomedicina.jpg');
     background-repeat: repeat;
-    background-size: 200px 200px; /* Establece el tamaño de la imagen a 100px por 100px */
-    color: rgb(255, 255, 255); /* Hace que el texto sea blanco */
-    text-shadow: 2px 2px 4px rgba(2, 2, 2, .9); /* Agrega sombra al texto */
-    -webkit-text-stroke: 1.5px rgb(17, 11, 2); /* Agrega un borde verde al texto */
-    opacity: 0.9;
+    background-size: 175px 175px;
+    opacity: 0.65; /* Aplica opacidad solo al fondo */
+    z-index: -1; /* Coloca el fondo detrás del texto */
 }
 
 table {
@@ -85,7 +100,7 @@ input[type=submit]:hover {
     display: flex;
     justify-content: space-between;
     background-color: #00953b;
-    z-index: 1000;
+    z-index: 1; /* Asegura que .header esté adelante de .fixed-title::before */
     padding: 10px;
     height: 50px;
 }
@@ -104,7 +119,7 @@ h2 {
 
 .table-container {
     overflow: auto;
-    max-height: 650px; /* Ajusta esto a la altura que desees */
+    max-height: 590px; /* Ajusta esto a la altura que desees */
 }
 
 .sticky-header th {
@@ -141,7 +156,7 @@ h2 {
 td {
     width: auto; /* Ajusta el ancho automáticamente para adaptarse al contenido */
     min-width: 155px; /* Establece un ancho mínimo para las celdas */
-    padding: 8px 20px; /* Aumenta el espacio horizontal y mantiene el vertical reducido */
+    padding: 4px 20px; /* Aumenta el espacio horizontal y mantiene el vertical reducido */
     vertical-align: center; /* Alinea el contenido en la parte superior */
     text-align: left; /* Alinea el texto a la izquierda */
     word-wrap: break-word; /* Permite que las palabras largas se rompan y pasen a la siguiente línea */
@@ -150,4 +165,32 @@ td {
 
 .status-checkbox {
     margin-right: 5px; /* Espaciado entre el checkbox y el texto */
+}
+
+@media (max-width: 768px) {
+    .header, .fixed-title {
+        padding: 5px; /* Menos padding en pantallas pequeñas */
+        height: auto; /* Altura auto para adaptarse al contenido */
+    }
+
+    .fixed-title {
+        margin-top: 5px;
+        font-size: 14px; /* Fuente más pequeña para pantallas pequeñas */
+    }
+
+    input[type=text], input[type=submit] {
+        padding: 8px 10px; /* Padding más pequeño */
+        font-size: 14px; /* Fuente más pequeña */
+    }
+}
+.header {
+    display: flex;
+    justify-content: space-between; /* Alinea elementos a los lados */
+    align-items: center; /* Centra elementos verticalmente */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en la siguiente línea si no hay espacio */
+}
+
+img {
+    max-width: 100%;
+    height: auto;
 }

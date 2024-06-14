@@ -1,5 +1,4 @@
-document.querySelectorAll('.status-checkbox').forEach(function(checkbox) {
-    checkbox.addEventListener('change', function() {
+document.querySelectorAll('.status-checkbox').forEach(function(checkbox) {    checkbox.addEventListener('change', function() {
         var status = this.dataset.status;
         var isChecked = this.checked;
         var enProcesoCheckbox = this.closest('td').querySelector('input[data-status="en_proceso"]');

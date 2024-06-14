@@ -5,6 +5,7 @@ from datetime import datetime, timezone, timedelta
 from flask import Flask, send_file
 from io import BytesIO
 from flask import Flask, request, make_response
+from flask_socketio import SocketIO
 import pandas as pd
 import sqlite3
 import schedule
@@ -13,6 +14,7 @@ import subprocess
 import os
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 def run_lector():
     # Ejecutar lector.py
