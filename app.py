@@ -6,6 +6,8 @@ from flask import Flask, send_file
 from io import BytesIO
 from flask import Flask, request, make_response
 from flask_socketio import SocketIO
+from openpyxl import Workbook
+import openpyxl
 import pandas as pd
 import sqlite3
 import schedule
@@ -98,32 +100,41 @@ def filter():
 
 @app.route('/download')
 def download_file():
-    estatus = request.args.get('estatus', None)  # Obtener el estatus de los parámetros de la URL
-    conn = sqlite3.connect('base_de_datos.db')
+    try:
+        estatus = request.args.get('estatus', None)
+        mes = request.args.get('mes', None)
+        ano = request.args.get('ano', None)
 
-    # Preparar la consulta SQL. Si estatus es None o 'todos', selecciona todo. De lo contrario, filtra por estado_actual.
+        # Validación de entradas (implementar según sea necesario)
+
+        query, params = build_query(estatus, mes, ano)
+
+        with sqlite3.connect('base_de_datos.db') as conn:
+            df = pd.read_sql_query(query, conn, params=params)
+
+        # Usar BytesIO para evitar la creación de un archivo físico
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False)
+        output.seek(0)
+
+        return send_file(output, as_attachment=True, download_name="recipes.xls", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    except Exception as e:
+        return str(e), 500
+
+def build_query(estatus, mes, ano):
     if estatus is None or estatus == 'todos':
-        query = "SELECT * FROM recipe"
+        if mes and ano:
+            # Ajuste para manejar fechas en formato dd/mm/aaaa
+            return "SELECT * FROM recipe WHERE SUBSTR(fecha, 4, 2) = ? AND SUBSTR(fecha, 7, 4) = ?", (mes, ano)
+        else:
+            return "SELECT * FROM recipe", ()
     else:
-        query = "SELECT * FROM recipe WHERE estado_actual = ?"
-
-    # Ejecutar la consulta y cargar los resultados en un DataFrame de pandas
-    if estatus is None or estatus == 'todos':
-        df = pd.read_sql_query(query, conn)
-    else:
-        df = pd.read_sql_query(query, conn, params=(estatus,))
-
-    conn.close()
-
-    # Generar el archivo Excel en memoria
-    output = BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        df.to_excel(writer, index=False)
-    output.seek(0)
-
-    # Enviar el archivo Excel al usuario
-    return send_file(output, as_attachment=True, download_name="recipes.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
+        if mes and ano:
+            # Ajuste para manejar fechas en formato dd/mm/aaaa
+            return "SELECT * FROM recipe WHERE estado_actual = ? AND SUBSTR(fecha, 4, 2) = ? AND SUBSTR(fecha, 7, 4) = ?", (estatus, mes, ano)
+        else:
+            return "SELECT * FROM recipe WHERE estado_actual = ?", (estatus,)
 if __name__ == '__main__':
     # Ejecutar lector.py inmediatamente antes de iniciar la aplicación
     run_lector()

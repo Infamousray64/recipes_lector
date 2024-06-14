@@ -147,9 +147,9 @@ h2 {
 }
 
 #status-filter {
-    margin-top: 10px;
+    margin-top: 0;
     border-radius: 5px; /* Ajusta este valor para cambiar cuán redondeados son los bordes */
-    height: 30px; /* Ajusta este valor para cambiar la altura del botón de filtro */
+    height: 35px; /* Ajusta este valor para cambiar la altura del botón de filtro */
     border: 2px solid orange; /* Añade un borde naranja al botón de filtro */
 }
 
@@ -193,4 +193,21 @@ td {
 img {
     max-width: 100%;
     height: auto;
+}
+#downloadForm input[type="number"] {
+    width: 100%;
+    padding: 6px 5px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    margin-right: 10px;
+    border-radius: 10px; /* Hace que la barra de búsqueda sea redondeada */
+    outline: orange;
+    border: 1px solid rgb(128, 128, 128); /* Añade un borde gris a la barra de búsqueda */
+    height: 35px; /* Ajusta la altura */
+    width: 100px;
+}
+
+#downloadForm input[type="number"]:focus {
+    border: 0.5px solid orange; /* Hace que la barra de búsqueda resalte de naranja al hacer clic en ella */
+    box-shadow: 0 0 5px orange; /* Añade un difuminado naranja alrededor de la barra de búsqueda */
 }

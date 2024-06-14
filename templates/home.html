@@ -24,7 +24,9 @@
             <option value="facturado total">Facturado total</option>
         </select>
 
-        <form id="downloadForm" action="/download" method="get">
+        <form id="downloadForm" action="javascript:void(0);" method="post">
+            <input type="number" id="mes" placeholder="Mes (MM)" required>
+            <input type="number" id="ano" placeholder="Año (AAAA)" required>
             <input type="submit" value="Descargar Excel">
         </form>
     </div>
