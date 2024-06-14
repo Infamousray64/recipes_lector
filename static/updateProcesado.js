@@ -1,4 +1,5 @@
-document.querySelectorAll('.status-checkbox').forEach(function(checkbox) {    checkbox.addEventListener('change', function() {
+document.querySelectorAll('.status-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
         var status = this.dataset.status;
         var isChecked = this.checked;
         var enProcesoCheckbox = this.closest('td').querySelector('input[data-status="en_proceso"]');
@@ -25,10 +26,16 @@ document.querySelectorAll('.status-checkbox').forEach(function(checkbox) {    ch
         var anyPartialChecked = cotizadoParcialCheckbox.checked || facturadoParcialCheckbox.checked;
         var anyTotalChecked = cotizadoTotalCheckbox.checked || facturadoTotalCheckbox.checked;
 
-        if (isChecked && ((anyPartialChecked && status.includes('total')) || (anyTotalChecked && status.includes('parcial')))) {
-            alert('No puede seleccionar un estado ' + (status.includes('total') ? 'total' : 'parcial') + ' si ya tiene un estado ' + (anyPartialChecked ? 'parcial' : 'total') + ' marcado.');
-            this.checked = false; // Desmarcar porque no cumple la nueva condición
-            return;
+        if (isChecked) {
+            if (anyPartialChecked && status.includes('total')) {
+                alert('No puede seleccionar un estado total si ya tiene un estado parcial marcado.');
+                this.checked = false; // Desmarcar porque no cumple la nueva condición
+                return;
+            } else if (anyTotalChecked && status.includes('parcial')) {
+                alert('No puede seleccionar un estado parcial si ya tiene un estado total marcado.');
+                this.checked = false; // Desmarcar porque no cumple la nueva condición
+                return;
+            }
         }
 
         // Deshabilitar el otro cotizado si uno es marcado
