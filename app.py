@@ -113,18 +113,19 @@ def filter():
 @app.route('/download')
 def download_file():
     try:
-        estatus = request.args.get('estatus', None)
-        mes = request.args.get('mes', None)
-        ano = request.args.get('ano', None)
+        estatus = request.args.get('estatus', 'todos')  # Si no se proporciona, usar 'todos'
+        mes = request.args.get('mes', default=None)
+        ano = request.args.get('ano', default=None)
 
-        # Validación de entradas (implementar según sea necesario)
+        # Si mes o ano son cadenas vacías, tratarlos como None
+        mes = None if mes == '' else mes
+        ano = None if ano == '' else ano
 
         query, params = build_query(estatus, mes, ano)
 
         with sqlite3.connect('base_de_datos.db') as conn:
             df = pd.read_sql_query(query, conn, params=params)
 
-        # Usar BytesIO para evitar la creación de un archivo físico
         output = BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             df.to_excel(writer, index=False)
@@ -135,18 +136,22 @@ def download_file():
         return str(e), 500
 
 def build_query(estatus, mes, ano):
-    if estatus is None or estatus == 'todos':
-        if mes and ano:
-            # Ajuste para manejar fechas en formato dd/mm/aaaa
-            return "SELECT * FROM recipe WHERE SUBSTR(fecha, 4, 2) = ? AND SUBSTR(fecha, 7, 4) = ?", (mes, ano)
-        else:
-            return "SELECT * FROM recipe", ()
+    # Si mes y ano no se proporcionan, seleccionar todos los registros sin importar el estatus
+    if not mes and not ano:
+        return "SELECT * FROM recipe", ()
     else:
-        if mes and ano:
-            # Ajuste para manejar fechas en formato dd/mm/aaaa
-            return "SELECT * FROM recipe WHERE estado_actual = ? AND SUBSTR(fecha, 4, 2) = ? AND SUBSTR(fecha, 7, 4) = ?", (estatus, mes, ano)
+        if estatus is None or estatus == 'todos':
+            if mes and ano:
+                # Ajuste para manejar fechas en formato dd/mm/aaaa
+                return "SELECT * FROM recipe WHERE SUBSTR(fecha, 4, 2) = ? AND SUBSTR(fecha, 7, 4) = ?", (mes, ano)
+            else:
+                return "SELECT * FROM recipe", ()
         else:
-            return "SELECT * FROM recipe WHERE estado_actual = ?", (estatus,)
+            if mes and ano:
+                # Ajuste para manejar fechas en formato dd/mm/aaaa
+                return "SELECT * FROM recipe WHERE estado_actual = ? AND SUBSTR(fecha, 4, 2) = ? AND SUBSTR(fecha, 7, 4) = ?", (estatus, mes, ano)
+            else:
+                return "SELECT * FROM recipe WHERE estado_actual = ?", (estatus,)
 if __name__ == '__main__':
     # Ejecutar lector.py inmediatamente antes de iniciar la aplicación
     run_lector()
