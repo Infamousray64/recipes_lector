@@ -28,19 +28,31 @@ schedule.every(10).seconds.do(run_lector)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    # Obtener la fecha actual en el formato dd/mm/aaaa
+    today_date = datetime.now().strftime('%d/%m/%Y')
+
     conn = sqlite3.connect('base_de_datos.db')
     c = conn.cursor()
 
     search_query = request.args.get('search')
 
     if search_query:
+        # Filtrar también por la fecha actual junto con la búsqueda y dar prioridad a los registros con estado_actual NULL
         c.execute('''
         SELECT DISTINCT * FROM recipe 
         WHERE (cedula LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR producto LIKE ?) 
-        ORDER BY SUBSTR(fecha, 7, 4) || '-' || SUBSTR(fecha, 4, 2) || '-' || SUBSTR(fecha, 1, 2) DESC
-        ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
+        AND fecha = ?
+        ORDER BY CASE WHEN estado_actual IS NULL THEN 0 ELSE 1 END, 
+        SUBSTR(fecha, 7, 4) || '-' || SUBSTR(fecha, 4, 2) || '-' || SUBSTR(fecha, 1, 2) DESC
+        ''', ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', today_date))
     else:
-        c.execute('''SELECT DISTINCT * FROM recipe ORDER BY SUBSTR(fecha, 7, 4) || '-' || SUBSTR(fecha, 4, 2) || '-' || SUBSTR(fecha, 1, 2) DESC''')
+        # Filtrar los resultados para mostrar solo los de la fecha actual y dar prioridad a los registros con estado_actual NULL
+        c.execute('''
+        SELECT DISTINCT * FROM recipe 
+        WHERE fecha = ?
+        ORDER BY CASE WHEN estado_actual IS NULL THEN 0 ELSE 1 END, 
+        SUBSTR(fecha, 7, 4) || '-' || SUBSTR(fecha, 4, 2) || '-' || SUBSTR(fecha, 1, 2) DESC
+        ''', (today_date,))
     recipes = c.fetchall()
 
     conn.close()

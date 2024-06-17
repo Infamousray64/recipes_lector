@@ -38,7 +38,7 @@ body {
     background-image: url('../static/fondomedicina.jpg');
     background-repeat: repeat;
     background-size: 175px 175px;
-    opacity: 0.65; /* Aplica opacidad solo al fondo */
+    opacity: 0.6; /* Aplica opacidad solo al fondo */
     z-index: -1; /* Coloca el fondo detrás del texto */
 }
 
@@ -107,6 +107,7 @@ input[type=submit]:hover {
 
 .logo {
     height: 50px;
+    
 }
 
 form {
