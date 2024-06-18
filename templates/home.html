@@ -7,29 +7,33 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='locatelfavicon.png') }}">
 </head>
 <body>
-    <div class="container"> <!-- Nuevo contenedor -->
-        <div class="header">
-            <img src="{{ url_for('static', filename='locatel.png') }}" alt="Logo" class="logo">
+    <div class="header">
+        <img src="{{ url_for('static', filename='locatel.png') }}" alt="Logo" class="logo" >
 
-            <form action="/" method="get">
-                <input type="text" name="search" placeholder="nombre, cedula o medicamento">
-                <input type="submit" value="Buscar">
-            </form>
+        <form action="/" method="get">
+            <input type="text" name="search" placeholder="nombre, cedula o medicamento">
+            <input type="submit" value="Buscar">
+        </form>
 
-            <select id="status-filter" onchange="filterRecipes()">
-                <option value="no procesado">No Procesado</option>
-                <option value="procesado">Procesado</option>
-                <option value="todos">Todos</option>
-            </select>
+        <select id="status-filter" onchange="filterRecipes()">
+            <option value="todos">Todos</option>
+            <option value="en proceso">En proceso</option>
+            <option value="cotizado parcial">Cotizado parcial</option>
+            <option value="cotizado total">Cotizado total</option>
+            <option value="facturado parcial">Facturado parcial</option>
+            <option value="facturado total">Facturado total</option>
 
-            <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-                <input type="file" name="file" accept=".xml"> <!-- Solo acepta archivos .xml -->
-                <input type="submit" value="Cargar Recipe">
-            </form>
-        </div>
+        </select>
+
+        <form id="downloadForm" action="javascript:void(0);" method="post">
+            <input type="number" id="mes" placeholder="Mes (MM)">
+            <input type="number" id="ano" placeholder="Año (AAAA)">
+            <input type="submit" value="Descargar Excel">
+        </form>
     </div>
+    
     <div class="fixed-title">
-        <h1>Atención VIP clientes</h1>
+        <h1>🔰 Atención VIP Clientes 🔰</h1>
     </div>
     
     <div class="table-container">
@@ -52,7 +56,7 @@
             <th>Producto</th>
             <th>Molecula</th>
             <th>Posologia</th>
-            <th>Procesado</th>
+            <th>Status</th> <!-- Título agregado para la columna de status -->
             <!-- Agrega más columnas según sea necesario -->
             </tr>
         </thead>
@@ -74,15 +78,19 @@
             <td>{{ recipe[13] }}</td>
             <td>{{ recipe[14] }}</td>
             <td>
-                <input type="checkbox" class="procesado-checkbox" data-id="{{ recipe[0] }}" {% if recipe[15] == 1 %}checked{% endif %}>
-            </td>
+                <div><input type="checkbox" class="status-checkbox" data-id="{{ recipe[0] }}" data-status="en_proceso" {% if recipe[15] == 1 %}checked{% endif %}> En proceso</div>
+                <div><input type="checkbox" class="status-checkbox" data-id="{{ recipe[0] }}" data-status="cotizado_parcial" {% if recipe[16] == 1 %}checked{% endif %}> Cotizado parcial</div>
+                <div><input type="checkbox" class="status-checkbox" data-id="{{ recipe[0] }}" data-status="cotizado_total" {% if recipe[17] == 1 %}checked{% endif %}> Cotizado total</div>
+                <div><input type="checkbox" class="status-checkbox" data-id="{{ recipe[0] }}" data-status="facturado_parcial" {% if recipe[18] == 1 %}checked{% endif %}> Facturado parcial</div>
+                <div><input type="checkbox" class="status-checkbox" data-id="{{ recipe[0] }}" data-status="facturado_total" {% if recipe[19] == 1 %}checked{% endif %}> Facturado total</div>
+            
             <!-- Agrega más celdas según sea necesario -->
         </tr>
         {% endfor %}
     </table>
 </div>
 <script src="{{ url_for('static', filename='funcionFiltro.js') }}"></script>
-<script src="{{ url_for('static', filename='fileUpload.js') }}"></script>
+<script src="{{ url_for('static', filename='fileDownpload.js') }}"></script>
 <script src="{{ url_for('static', filename='updateProcesado.js') }}"></script>
 </body>
 </html>

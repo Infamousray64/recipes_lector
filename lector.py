@@ -27,7 +27,17 @@ c.execute('''
         producto TEXT,
         principio_activo TEXT,
         posologia TEXT,
-        procesado BOOLEAN DEFAULT FALSE,
+        en_proceso BOOLEAN DEFAULT FALSE,
+        cotizado_parcial BOOLEAN DEFAULT FALSE,
+        cotizado_total BOOLEAN DEFAULT FALSE,
+        facturado_parcial BOOLEAN DEFAULT FALSE,
+        facturado_total BOOLEAN DEFAULT FALSE,
+        en_proceso_time TEXT,
+        cotizado_parcial_time TEXT,
+        cotizado_total_time TEXT,
+        facturado_parcial_time TEXT,
+        facturado_total_time TEXT,
+        estado_actual TEXT,
         UNIQUE(fecha, medicotratante, especialidad, responsablepago, nombres, apellidos, nacionalidad, cedula, telefonos, sms, correo, producto, principio_activo)
     )
 ''')
@@ -38,11 +48,14 @@ c.execute('''
 columns = c.fetchall()
 column_names = [column[1] for column in columns]
 
-if 'procesado' not in column_names:
-    c.execute('''
-        ALTER TABLE recipe
-        ADD COLUMN procesado BOOLEAN DEFAULT FALSE
-    ''')
+columnas_nuevas = ['en_proceso', 'cotizado_parcial', 'cotizado_total', 'facturado_parcial', 'facturado_total']
+
+for columna in columnas_nuevas:
+    if columna not in column_names:
+        c.execute(f'''
+            ALTER TABLE recipe
+            ADD COLUMN {columna} BOOLEAN DEFAULT FALSE
+        ''')
 
 # Directorio donde se encuentran los archivos XML
 dir_name = 'recipes/'
