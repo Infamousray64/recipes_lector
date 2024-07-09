@@ -2,7 +2,7 @@
 > Una solución desarrollada para la **lectura y procesamiento de recipes medicos en formato .xml.** con tecnicas **AJAX** para lograr intercambio de datos de forma asincronona.
 > El repositorio posee un total de **5 ramas activas (master, develop, feature, fix y test).**
 > Las tecnologias utilizadas para el backend fueron **Python con su framework FLask**, mientras que para el frontend se utilizó
-> **Java Script, HTML y CSS.**. El proyecto se integra con **API's de google** para la comunicación directa con **gmail**; esto se logra con el protocolo de autenticacion de **google** llamado **OAuth2** que genera un **token** al leer el archivo **Credentials.json**.
+> **Java Script, HTML y CSS.**. El proyecto se integra con **API's de google** para la comunicación directa con **gmail**; esto se logra con el protocolo de autenticacion de **google** llamado **OAuth2** que genera un **token** al leer el archivo **Credentials.json** generado en el google dev console.
 >
 > El proyecto, para la etapa de testing usa **SQLITE** que otorga la facilidad de generar el archivo de base de datos localmente en la maquina, aunque para el deploy de producción se planea utilizar una base de datos **MySQL** en un contenedor de **Docker**.
 
