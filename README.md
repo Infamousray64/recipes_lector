@@ -1,4 +1,4 @@
-##  🔰 ATENCIÓN DE CLIENTES clinica 🔰
+##  Lector XML
 > Una solución desarrollada para la **lectura y procesamiento de recipes medicos en formato .xml.**
 > El repositorio original posee un total de **5 ramas activas (master, develop, feature, fix y test).**
 > El **ing. Ramón Marrón** fue designado como programador lider en el proyecto, administrando el workflow del repositorio.
