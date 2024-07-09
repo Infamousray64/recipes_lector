@@ -1,4 +1,4 @@
-###  Lector de recipes 📝
+#  Lector de recipes 📝
 > Una solución desarrollada para la **lectura y procesamiento de recipes medicos en formato .xml.** con tecnicas **AJAX** para lograr intercambio de datos de forma asincronona.
 > El repositorio posee un total de **5 ramas activas (master, develop, feature, fix y test).**
 > El **ing. Ramón Marrón** fue designado como programador lider en el proyecto, administrando el workflow del repositorio.
